@@ -48,7 +48,6 @@ class Coin {
 		//Anima a figura
 		this.animation = function () {
 			this.countAnim++;
-			navigator.vibrate([500]);
 			if (this.countAnim >= 50) {
 				this.countAnim = 0;
 			}

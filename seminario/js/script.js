@@ -125,8 +125,8 @@ window.onload = function () {
 				if ((item.posX) <= zezim.posX + zezim.width && zezim.posX <= (item.posX + item.width)) {
 					item.posY = -100;
 					if (counter < 10) {
+						navigator.vibrate([500]);
 						coin.push(new Coin(spriteSheetCoin, cnv.width, counter));
-
 						//Colisao
 					}
 
