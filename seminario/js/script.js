@@ -81,7 +81,6 @@ window.onload = function () {
 			case RIGHT:
 				zezim.mvRight = false;
 
-
 				break;
 			case LEFT:
 				zezim.mvLeft = false;
@@ -115,7 +114,7 @@ window.onload = function () {
 	}
 
 	function update() {
-
+		var gp = navigator.getGamepads()[0];
 		zezim.move(minWidth, maxWidth, time, floorHeight);
 		coin.forEach(function (item, indice, array) {
 			item.move();
@@ -126,12 +125,45 @@ window.onload = function () {
 					item.posY = -100;
 					if (counter < 10) {
 						navigator.vibrate([500]);
+						if(gp)
+						if (gp.vibrationActuator) {
+							gp.vibrationActuator.playEffect("dual-rumble", {
+								duration: 1000,
+								strongMagnitude: 1.0,
+								weakMagnitude: 1.0
+							});
+						}
+						
 						coin.push(new Coin(spriteSheetCoin, cnv.width, counter));
 						//Colisao
 					}
 
 					counter++;
 				}
+			}
+
+			if(gp){
+				console.log(gp);
+				if(gp.axes[0] > 0.001){
+					zezim.mvLastRight = true;
+					zezim.mvRight = true;
+					zezim.mvLeft = false;
+					zezim.mvUp = false;
+					zezim.mvDown = false;
+				}else if( gp.axes[0] < -0.001){
+					zezim.mvLastRight = false;
+					zezim.mvRight = false;
+					zezim.mvLeft = true;
+					zezim.mvUp = false;
+					zezim.mvDown = false;
+				}else{
+					zezim.mvLastRight = false;
+					zezim.mvRight = false;
+					zezim.mvLeft = false;
+					zezim.mvUp = false;
+					zezim.mvDown = false;
+				}
+			
 			}
 			// passar da tela
 			if (item.posY > cnv.height) {
@@ -164,6 +196,7 @@ window.onload = function () {
 	}
 
 	function loop() {
+		var gp = navigator.getGamepads()[0];	
 		window, requestAnimationFrame(loop, cnv);
 		time += 1;
 		update();
