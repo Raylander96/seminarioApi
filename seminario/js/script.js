@@ -24,7 +24,6 @@ window.onload = function () {
 	coin.forEach(function (item, indice, array) {
 		console.log(item, indice);
 	});
-	console.log()
 	var maxWidth = cnv.width - zezim.width;
 	var minWidth = 0;
 
@@ -80,7 +79,6 @@ window.onload = function () {
 		switch (e.keyCode) {
 			case RIGHT:
 				zezim.mvRight = false;
-
 				break;
 			case LEFT:
 				zezim.mvLeft = false;
@@ -94,6 +92,43 @@ window.onload = function () {
 			case SPACE:
 				zezim.atack = false;
 				break;
+		}
+	}
+
+	function gamePadHandler(){
+		var gp = navigator.getGamepads()[0];
+		if (gp) {
+			console.log(gp);
+			if (gp.axes[0] > 0.001) {
+				zezim.mvLastRight = true;
+				zezim.mvRight = true;
+				zezim.mvLeft = false;
+				zezim.mvUp = false;
+				zezim.mvDown = false;
+			} else if (gp.axes[0] < -0.001) {
+				zezim.mvLastRight = false;
+				zezim.mvRight = false;
+				zezim.mvLeft = true;
+				zezim.mvUp = false;
+				zezim.mvDown = false;
+			} else {
+				zezim.mvLastRight = false;
+				zezim.mvRight = false;
+				zezim.mvLeft = false;
+				zezim.mvUp = false;
+				zezim.mvDown = false;
+			}
+
+			console.log(gp.buttons[2].pressed)
+			
+
+		}
+		if(gp){
+			if (gp.buttons[2].pressed) {
+				zezim.atack = true;
+			} else {
+				zezim.atack = false;
+			}
 		}
 	}
 
@@ -118,53 +153,27 @@ window.onload = function () {
 		zezim.move(minWidth, maxWidth, time, floorHeight);
 		coin.forEach(function (item, indice, array) {
 			item.move();
-
 			//Colisao
 			if ((item.posY) <= zezim.posY + zezim.height && zezim.posY <= (item.posY + item.height)) {
 				if ((item.posX) <= zezim.posX + zezim.width && zezim.posX <= (item.posX + item.width)) {
 					item.posY = -100;
 					if (counter < 10) {
 						navigator.vibrate([500]);
-						if(gp)
-						if (gp.vibrationActuator) {
-							gp.vibrationActuator.playEffect("dual-rumble", {
-								duration: 1000,
-								strongMagnitude: 1.0,
-								weakMagnitude: 1.0
-							});
-						}
-						
+						if (gp)
+							if (gp.vibrationActuator) {
+								gp.vibrationActuator.playEffect("dual-rumble", {
+									duration: 1000,
+									strongMagnitude: 1.0,
+									weakMagnitude: 1.0
+								});
+							}
+
 						coin.push(new Coin(spriteSheetCoin, cnv.width, counter));
 						//Colisao
 					}
-
 					counter++;
 				}
-			}
-
-			if(gp){
-				console.log(gp);
-				if(gp.axes[0] > 0.001){
-					zezim.mvLastRight = true;
-					zezim.mvRight = true;
-					zezim.mvLeft = false;
-					zezim.mvUp = false;
-					zezim.mvDown = false;
-				}else if( gp.axes[0] < -0.001){
-					zezim.mvLastRight = false;
-					zezim.mvRight = false;
-					zezim.mvLeft = true;
-					zezim.mvUp = false;
-					zezim.mvDown = false;
-				}else{
-					zezim.mvLastRight = false;
-					zezim.mvRight = false;
-					zezim.mvLeft = false;
-					zezim.mvUp = false;
-					zezim.mvDown = false;
-				}
-			
-			}
+			}		
 			// passar da tela
 			if (item.posY > cnv.height) {
 				item.posY = -100;
@@ -196,9 +205,10 @@ window.onload = function () {
 	}
 
 	function loop() {
-		var gp = navigator.getGamepads()[0];	
+		var gp = navigator.getGamepads()[0];
 		window, requestAnimationFrame(loop, cnv);
 		time += 1;
+		gamePadHandler();
 		update();
 		draw();
 	}
