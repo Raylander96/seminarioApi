@@ -125,6 +125,10 @@ window.onload = function () {
 		}
 		if(gp){
 			if (gp.buttons[2].pressed) {
+				zezim.mvRight = false;
+				zezim.mvLeft = false;
+				zezim.mvUp = false;
+				zezim.mvDown = false;
 				zezim.atack = true;
 			} else {
 				zezim.atack = false;
